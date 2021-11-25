@@ -192,7 +192,7 @@ shinyServer(function(input, output, session) {
     prueba<-confirmed %>%
       group_by(fecha,country) %>%
       summarise(cases=sum(valor)) %>%
-      filter(country==input$pais3,fecha>= "2020-10-22",fecha<="2021-10-22")
+      filter(country==input$pais300,fecha>= "2020-10-22",fecha<="2021-10-22")
     
     prueba <- xts(x = prueba$cases, order.by = as.Date(prueba$fecha))
     #prueba <- ts_ts(ts_long(prueba))
@@ -205,6 +205,44 @@ shinyServer(function(input, output, session) {
       dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 1, 
                   hideOnMouseOut = FALSE) 
 
+  })
+  
+  output$dygraph2 <- renderDygraph({
+    prueba<-deaths %>%
+      group_by(fecha,country) %>%
+      summarise(cases=sum(valor)) %>%
+      filter(country==input$pais302,fecha>= "2020-10-22",fecha<="2021-10-22")
+    
+    prueba <- xts(x = prueba$cases, order.by = as.Date(prueba$fecha))
+    #prueba <- ts_ts(ts_long(prueba))
+    
+    dygraph(main = "Casos Fallecidos de Covid-19",prueba) %>%
+      dyOptions( drawPoints = TRUE, pointSize = 2 ,fillGraph = TRUE,axisLabelColor = "white") %>% 
+      dySeries(label = "Cases") %>% 
+      dyRangeSelector() %>% 
+      dyCrosshair(direction = "vertical") %>%
+      dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 1, 
+                  hideOnMouseOut = FALSE) 
+    
+  })
+  
+  output$dygraph3 <- renderDygraph({
+    prueba<-recovered %>%
+      group_by(fecha,country) %>%
+      summarise(cases=sum(valor)) %>%
+      filter(country==input$pais303,fecha>= "2020-10-22",fecha<="2021-10-22")
+    
+    prueba <- xts(x = prueba$cases, order.by = as.Date(prueba$fecha))
+    #prueba <- ts_ts(ts_long(prueba))
+    
+    dygraph(main = "Casos Recuperados de Covid-19",prueba) %>%
+      dyOptions( drawPoints = TRUE, pointSize = 2 ,fillGraph = TRUE,axisLabelColor = "white") %>% 
+      dySeries(label = "Cases") %>% 
+      dyRangeSelector() %>% 
+      dyCrosshair(direction = "vertical") %>%
+      dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 1, 
+                  hideOnMouseOut = FALSE) 
+    
   })
   
   output$grafica4 <- renderPlot({
@@ -309,6 +347,19 @@ shinyServer(function(input, output, session) {
     colnames(tabla04) <- paste0('<span style="color:',"white",'">',colnames(tabla04),'</span>')
     datatable(tabla04,escape=F)
   })
+  
+  output$tabla05 <- renderDataTable({
+    tabla05 <- TopConfirmados
+    colnames(tabla05) <- paste0('<span style="color:',"white",'">',colnames(tabla05),'</span>')
+    datatable(tabla05,escape=F)
+  })
+  
+  output$tabla06 <- renderDataTable({
+    tabla06 <- TopRecup
+    colnames(tabla06) <- paste0('<span style="color:',"white",'">',colnames(tabla06),'</span>')
+    datatable(tabla06,escape=F)
+  })
+
   
 })
 

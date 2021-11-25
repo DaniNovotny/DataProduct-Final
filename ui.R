@@ -91,11 +91,13 @@ shinyUI(navbarPage(
                          virus, muertes, y de recuperaciones. Estos tienen informacion sobre diferentes
                          paises y regiones a travez del tiempo, comenzando desde enero del año 2020, 
                          que es justo para inicios de pandemia, hasta fechas recientes."),br(),
-           h3("Docker"),p("En Docker creamos una instancia de Airflow. La base de datos que decidimos 
-                          utilizar, MySQL, tambien corre atravez de Docker. Finalmente, para ejecutar 
-                          el dashboard tambien se debe correr con Docker. El Shiny App debe poder 
+           h3("Docker"),p("Docker es un software que trabaja por contenedores, que permite crear e implementar
+aplicaciones facilmente. En este trabajo utilizamos este software para crear una instancia de Airflow. La base de datos que decidimos 
+                          utilizar (MySQL), tambien corre en un contenedor de Docker. Ademas, para ejecutar y visualizar
+                          el dashboard que se trabajo en shiny app, tambien se debe crear un contenedor. El Shiny App debe poder 
                           hacer la coneccion con la base de datos, de forma que no se tenga que ingresar
-                          manualmente los archivos csv con los que trabajaremos. "), br()
+                          manualmente los archivos csv con los que trabajaremos. "), br(), br(),
+           p("A continuacion se presenta la visualizacion del Dashboard que trabajamos.")
            ),
 
 # Integrantes -------------------------------------------------------------
@@ -114,7 +116,7 @@ shinyUI(navbarPage(
   tabPanel("Datos",
            h1("Presentacion de Datos"),br(),
            tabsetPanel(
-             tabPanel("Datos",
+             tabPanel("Datos agrupados",
                       dataTableOutput('Datos'),
                       h1("Data agrupada"),br(),
                       p("Estos son los tres archivos de confirmados, muertes, y recuperados 
@@ -207,40 +209,67 @@ shinyUI(navbarPage(
 # Casos por fecha ---------------------------------------------------------
 
   tabPanel("Casos por fechas",
+           br(),
+           tabsetPanel(
+             tabPanel("Confirmados",br(),
            p("(En esta gráfica usted podra ver el comportamiento de los casos confirmados a lo 
              largo del tiempo, por el pais que seleccione."),
            p("Funcionamiento: si le interesa ver un detalle de la grafica, puede seleccionar el
              area sobre la grafica para indicar el intervalo de tiempo que le gustaria 
-             para poder ampliar la graafica."), br(),
-           selectInput('pais3','Seleccione un pais',
+             para poder ampliar la grafica."), br(),
+           selectInput('pais300','Seleccione un pais',
                        choices = paises,
                        selected = "Guatemala"),
            p("Por favor espere a que carge la grafica)."),
            dygraphOutput("dygraph")),
+           
+           tabPanel("Muertes",br(),
+                    p("(En esta gráfica usted podra ver el comportamiento de los fallecidos a lo 
+             largo del tiempo, por el pais que seleccione."),
+                    p("Funcionamiento: si le interesa ver un detalle de la grafica, puede seleccionar el
+                      area sobre la grafica para indicar el intervalo de tiempo que le gustaria 
+                      para poder ampliar la grafica."), br(),
+                    selectInput('pais302','Seleccione un pais',
+                                choices = paises,
+                                selected = "Guatemala"),
+                    p("Por favor espere a que carge la grafica)."),
+                    dygraphOutput("dygraph2")),
+           
+           tabPanel("Recuperados",br(),
+                    p("(En esta gráfica usted podra ver el comportamiento de los recuperados a lo 
+                      largo del tiempo, por el pais que seleccione."),
+                    p("Funcionamiento: si le interesa ver un detalle de la grafica, puede seleccionar el
+                      area sobre la grafica para indicar el intervalo de tiempo que le gustaria 
+                      para poder ampliar la grafica."), br(),
+                    selectInput('pais303','Seleccione un pais',
+                                choices = paises,
+                                selected = "Guatemala"),
+                    p("Por favor espere a que carge la grafica)."),
+                    dygraphOutput("dygraph3"))
+           
+           )),
 
 # Comparacion entre paises ------------------------------------------------
 
   tabPanel("Comparacion entre paises",
-           h1("Bubble Map"),br(), 
-           p("Las tres gráficas se tardan un poco en cargar, por favor espere un momento."), br(),
-           
+           h1("Comparacion entre paises"),br(), 
            tabsetPanel(
-             tabPanel("Confirmados",
+             tabPanel("Confirmados",br(),
            sidebarLayout(
              sidebarPanel(
-               p("Aqui podra elegir varios paises de su intres para que graficamente pueda
-                 visualizar el total de casos confirmados historicamente por cada pais."),
+               p("En este espacio podra elegir varios paises de su intres para que graficamente pueda
+                 visualizar el total de casos confirmados historicamente por cada pais."), br(),
                selectInput('pais4','Seleccione los paises que le interesa analizar:',
                            choices = paises,selected = c("Guatemala","China","Australia","Norway"),
                            multiple = TRUE)),
              mainPanel(
                plotOutput('grafica4')
              ))
-           ),tabPanel("Muertes",
+           ),tabPanel("Muertes", br(),
                       sidebarLayout(
                         sidebarPanel(
-                          p("Aqui podra elegir varios paises de su intres para que graficamente pueda
-                            visualizar el total de muertes historicamente por cada pais."),
+                          p("En este espacio podra elegir varios paises de su intres para que graficamente pueda
+                            visualizar el total de muertes historicamente por cada pais."), br(),
                           selectInput('pais5','Seleccione los paises que le interesa analizar:',
                                       choices = paises,selected = c("Guatemala","China","Australia","Norway"),
                                       multiple = TRUE)),
@@ -248,11 +277,11 @@ shinyUI(navbarPage(
                           plotOutput('grafica42')
                         ))
                       ),
-           tabPanel("Recuperados",
+           tabPanel("Recuperados", br(),
                     sidebarLayout(
                       sidebarPanel(
-                        p("Aqui podra elegir varios paises de su intres para que graficamente pueda
-                          visualizar el total de recuperados historicamente por cada pais."),
+                        p("En este espacio podra elegir varios paises de su intres para que graficamente pueda
+                          visualizar el total de recuperados historicamente por cada pais."), br(),
                         selectInput('pais6','Seleccione los paises que le interesa analizar:',
                                     choices = paises,selected = c("Guatemala","China","Australia","Norway"),
                                     multiple = TRUE)),
@@ -265,11 +294,22 @@ shinyUI(navbarPage(
 # Estadisticas ------------------------------------------------------------
 
   tabPanel("Estadisticas",
+           h1("Estadisticas"),br(),
+           p("En esta area podra explorar varias tablas interesantes sobre diferentes 
+             comportamientos de los paises durante pandemia."), br(),
            tabsetPanel(
-             tabPanel("Top 10 +muertes",
-                      h1("Paises con mas muertes en el mundo"),br(),
+             tabPanel("Top 10 muertes",
+                      h1("Top 10 Paises con mas muertes en el mundo"),br(),
                       p("Estos son los diez paises con mas muertes."), br(),
                       dataTableOutput('tabla04')),
+             tabPanel("Top 10 confirmados",
+                      h1("Top 10 Paises con mas casos confirmados en el mundo"),br(),
+                      p("Estos son los diez paises con mas casos confirmados"), br(),
+                      dataTableOutput('tabla05')),
+             tabPanel("Top 10 recuperados",
+                      h1("Top 10 Paises con mas recuperaciones en el mundo"),br(),
+                      p("Estos son los diez paises con mas recuperaciones"), br(),
+                      dataTableOutput('tabla06')),
              tabPanel("Resumen de paises",
                       h1("Resumen de paises"),br(),
                       p("Esta tabla devuelve el total de personas contagiadas, total de fallecidos,
@@ -282,6 +322,8 @@ shinyUI(navbarPage(
                       dataTableOutput('tabla02')),
              tabPanel("Recuperados por paises",
                       h1("Ratio de recuperados por paises"),br(),
+                      p("Este es un listado por pais, en el que se muestra que porcentaje de
+                        fallecidos, en comparacion a cuantos confirmados hubo en el pais."), br(),
                       dataTableOutput('tabla03'))
              
            ))
